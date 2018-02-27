@@ -44,7 +44,6 @@ def process(request, action):
                 return redirect('/login')
             else:
                 request.session['user_id'] = log_user['data'].id
-<<<<<<< HEAD
                 if log_user['data'].user_level == 1:
                     return redirect('/jobs')
                 elif log_user['data'].user_level == 2:
@@ -195,7 +194,4 @@ def logout(request):
         return redirect('/')
     else:
         return redirect('/')
-=======
-                return redirect('/')
                 
->>>>>>> 993c75714eb031e14d10293b7921f7ace9242dfc

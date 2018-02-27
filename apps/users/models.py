@@ -34,12 +34,6 @@ class UserManager(models.Manager):
         else:
             hashed_pw = bcrypt.hashpw(postData['password'].encode(), bcrypt.gensalt())
             user = User.objects.create(first_name = postData['first_name'], last_name = postData['last_name'], email = postData['email'], password = hashed_pw, user_level = 1)
-<<<<<<< HEAD
-=======
-            if len(User.objects.all()) == 1:
-                user.user_level = 9
-                user.save()
->>>>>>> 993c75714eb031e14d10293b7921f7ace9242dfc
             res['data'] = user
         return res
 

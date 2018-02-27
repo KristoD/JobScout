@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <!-- home and what not -->
+        </div>
+        <div id="body">
+            <form action="/become_employer" method="post">
+                {% csrf_token %}
+                Company Name: <input type="text" name="company_name">
+                Company Description: <input type="text" name="company_description">
+                <input type="hidden" name="user_id" value={{request.session.user_id}}>
+            </form>
+        </div>
+    </div>    
+</body>
+</html>
