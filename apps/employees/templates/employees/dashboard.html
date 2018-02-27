@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- To make page responsive on mobile -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>JobScout | Jobs</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'users/css/landing.css' %}">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
+			    	<span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			    </button>
+				<a href="/" class="navbar-brand">JobScout</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-nav-demo">
+				<ul class="nav navbar-nav">
+                    <li><a href="/jobs">Home</a></li>
+                    {% if 'user_id' in request.session %}
+                        <li><a href="/employers/info">Create Business Account</a></li>
+                    {% endif %}
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+                    {% if 'user_id' in request.session %}
+                        <!-- <li><a href="/user/{{ user.id }}"><i class="fa fa-user"></i> Hi, {{ user.first_name }}</a></li> -->
+                        <li class="dropdown">
+                            <a href="/user/{{ user.id }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Hi, {{ user.first_name }} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+								<li><a href="/user/{{ user.id }}">Profile</a></li>
+								<li><a href="/user/{{ user.id }}/resume">Resume</a></li>
+								<li><a href="/user/{{ user.id }}/edit/profile">Edit Profile</a></li>
+								<li><a href="/user/{{ user.id }}/edit/resume">Edit Resume</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="/logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="/signup">Sign up <i class="fa fa-user-plus" aria-hidden="true"></i></a></li>
+                        <li><a href="/login">Login <i class="fa fa-user" aria-hidden="true"></i></a></li>
+                    {% endif %}
+				</ul>
+			</div>
+		</div>	
+    </nav>
+
+
+
+</body>
+</html>

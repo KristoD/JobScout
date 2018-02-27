@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>JobScout | User {{ user.first_name }}</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="{% static 'users/css/show.css' %}">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">JobScout</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-nav-demo">
+                <ul class="nav navbar-nav">
+                    <li><a href="/jobs">Home</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="/user/{{ user.id }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Hi, {{ user.first_name }} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/user/{{ user.id }}">Profile</a></li>
+                            <li><a href="/user/{{ user.id }}/resume">Resume</a></li>
+                            <li><a href="/user/{{ user.id }}/edit/profile">Edit Profile</a></li>
+                            <li><a href="/user/{{ user.id }}/edit/resume">Edit Resume</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/logout">Logout</a></li>                
+                </ul>
+            </div>
+        </div>	
+    </nav>
+
+    <div class="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="navstack">
+                        <ul class="nav nav-pills nav-stacked">
+                                <li role="presentation"><a href="/user/{{ user.id }}">Profile</a></li>
+                                <li role="presentation"><a href="/user/{{ user.id }}/resume">Resume</a></li>
+                                <li role="presentation"><a href="/user/{{ user.id }}/edit_info">Edit Profile</a></li>
+                                <li role="presentation" class="active"><a href="/user/{{ user.id }}/edit/resume">Edit Resume</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="resume">
+                    <div class="col-lg-8">
+                        <h2>Education</h2>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        {% endif %}
+                        <form action="/user/add/education" method="POST" class="form-horizontal">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                    <label for="inputDegree">Degree</label>
+                                    <input type="text" class="form-control" id="inputDegree" name="degree">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputSchool">School</label>
+                                    <input type="text" class="form-control" id="inputSchool" name="school">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputStudy">Field of Study</label>
+                                    <input type="text" class="form-control" id="inputStudy" name="study">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEduCity">City</label>
+                                    <input type="text" class="form-control" id="inputEduStudy" name="edu_city">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEduStartDate">Start Date</label>
+                                    <input type="date" class="form-control" id="inputEduStartDate" name="edu_time_start">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputEduEndDate">End Date</label>
+                                    <input type="date" class="form-control" id="inputEduEndDate" name="edu_time_end">
+                                </div>
+                            <input type="hidden" name="resume_id" value="{{ resume.id }}">
+                            <input type="submit" value="Add Education">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
