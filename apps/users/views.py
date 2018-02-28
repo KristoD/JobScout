@@ -32,7 +32,7 @@ def process(request, action):
             if reg_user['status'] == "bad":
                 for error in reg_user['data']:
                     messages.error(request, error)
-                    return redirect('/register')
+                    return redirect('/signup')
             else:
                 request.session['user_id'] = reg_user['data'].id
                 return redirect('/jobs')
@@ -46,8 +46,6 @@ def process(request, action):
                 request.session['user_id'] = log_user['data'].id
                 if log_user['data'].user_level == 1:
                     return redirect('/jobs')
-                elif log_user['data'].user_level == 2:
-                    return redirect('/employer')
                 elif log_user['data'].user_level == 3:
                     return redirect('/admin')
         else:
@@ -136,22 +134,24 @@ def edit(request, action):
             if action == "profile":
                 user_profile = User.objects.edit_profile(request.POST)
                 if user_profile['status'] == "bad":
-                    messages.error(request, error)
+                    for error in user_profile['data']:
+                        messages.error(request, error)
                     return redirect('/user/' + str(request.session['user_id']) + "/edit/profile")
                 else:
                     return redirect('/user/' + str(request.session['user_id']))
             elif action == "address":
                 user_address = Address.objects.edit_address(request.POST)
                 if user_address['status'] == "bad":
-                    messages.error(request, error)
+                    for error in user_address['data']:
+                        messages.error(request, error)
                     return redirect('/user/' + str(request.session['user_id']) + "/edit/profile")
                 else:
                     return redirect('/user/' + str(request.session['user_id']))
             elif action == "resume":
                 user_resume = Resume.objects.edit_resume(request.POST)
                 if user_resume['status'] == "bad":
-                    messages.error(request, user_resume['data'])
-                    print "errorrrr"
+                    for error in user_resume['data']:
+                        messages.error(request, user_resume['data'])
                     return redirect('/user/' + str(request.session['user_id']) + "/edit/resume")
                 else:
                     return redirect('/user/' + str(request.session['user_id']) + "/resume")

@@ -29,7 +29,7 @@
                     <li><a href="#">Blog</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/signup">Sign up <i class="fa fa-user" aria-hidden="true"></i></a></li>
+                    <li><a href="/employers/signup">Sign up <i class="fa fa-user" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
         </div>	
@@ -39,7 +39,7 @@
         <div class="jumbotron">
             <h1>JobScout</h1>
             <hr>
-            <p>Login and start searching!</p>
+            <p>Login to manage your business listings</p>
         </div>
     </div>
 
@@ -53,7 +53,7 @@
                             <p>{{ message }}</p>
                         {% endfor %}
                     {% endif %}
-                    <form class="form-horizontal" action="/process/login" method="POST">
+                    <form class="form-horizontal" action="/employers/process/login" method="POST">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="inputEmail">Email</label>
@@ -64,7 +64,7 @@
                             <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password">
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-default">Sign up</button>
+                            <button type="submit" class="btn btn-default">Login</button>
                         </div>
                     </form>
                 </div>

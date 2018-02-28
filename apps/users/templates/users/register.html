@@ -48,6 +48,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <div id="register">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
                     <form class="form-horizontal" action="/process/register" method="POST">
                         {% csrf_token %}
                         <div class="form-group">

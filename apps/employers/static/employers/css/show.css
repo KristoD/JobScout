@@ -1,0 +1,40 @@
+.profile {
+    vertical-align: top;
+    margin: 10% auto;
+}
+
+textarea {
+    resize: none;
+}
+
+* {
+    font-family: Lato;
+}
+
+html {
+    height: 100%;
+}
+
+#info {
+    margin: 3% 10%;
+    width: 75%;
+}
+
+#navstack {
+    margin-top: 10%;
+}
+
+#address, #resume, #listing {
+    margin: 3% 10%;
+    width: 75%;
+}
+
+.fa-minus-circle {
+    color: red;
+}
+
+@media (max-width: 978px) {
+    .jumbotron p {
+      font-size: 14px;
+    }
+}

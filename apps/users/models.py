@@ -56,7 +56,7 @@ class UserManager(models.Manager):
             res['data'] = "Email or Password incorrect"
             return res
 
-    def edit_profile(self, postData):
+    def edit_company(self, postData):
         res = {
             "status" : "good",
             "data" : ""
