@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import *
+from .. users.models import *
+from job_scout import settings
+
 
 def index(request):
     if not 'employer_id' in request.session:
@@ -8,6 +11,7 @@ def index(request):
     else:
         context = {
             "employer" : Employer.objects.get(id = request.session['employer_id']),
+            "listings" : Listing.objects.filter(employer_id = request.session['employer_id']),
         }
         return render(request, 'employers/dashboard.html', context)
 
@@ -16,6 +20,27 @@ def login(request):
 
 def register(request):
     return render(request, 'employers/register.html')
+
+def applicant(request, id, id2):
+    if not 'employer_id' in request.session:
+        return redirect('/')
+    else:
+        context = {
+            "employer" : Employer.objects.get(id = request.session['employer_id']),
+            "resume" : Resume.objects.get(id=id),
+            "listing" : Listing.objects.get(id = id2)
+        }
+        return render(request, 'employers/applicant.html', context)
+
+def remove_applicant(request, id):
+    if not 'employer_id' in request.session:
+        return redirect('/')
+    else:
+        listing = Listing.objects.get(id = request.POST['listing_id'])
+        resume = Resume.objects.get(id = id)
+        listing.user_resumes.remove(resume)
+        listing.save()
+        return redirect('/employers/dashboard')
 
 def edit_company(request, id, action):
     if not 'employer_id' in request.session:
@@ -34,7 +59,6 @@ def listings(request, id):
     else:
         context = {
             "employer" : Employer.objects.get(id = request.session['employer_id']),
-            "address" : EmployerAddress.objects.get(employer_id = request.session['employer_id']),
             "listings" : Listing.objects.filter(employer_id = request.session['employer_id'])
         }
         return render(request, 'employers/listings.html', context)
@@ -46,7 +70,35 @@ def new_listing(request, id):
         context = {
             "employer" : Employer.objects.get(id = request.session['employer_id']),
         }
-        return render(request, 'employers/new_listing.html', context)    
+        return render(request, 'employers/new_listing.html', context)
+
+def confirm_listing(request, id, id2):
+    if not 'employer_id' in request.session:
+        return redirect('/')
+    else:
+        context = {
+            "employer" : Employer.objects.get(id = request.session['employer_id']),
+            "listing" : ConfirmListing.objects.get(id = id2),
+            "stripe_key": settings.STRIPE_PUBLIC_KEY
+        }
+        return render(request, 'employers/confirmation.html', context)
+
+def edit_listing(request, id):
+    if not 'employer_id' in request.session:
+        return redirect('/')
+    else:
+        context = {
+            "employer" : Employer.objects.get(id = request.session['employer_id']),
+            "listing" : Listing.objects.get(id = id)
+        }
+        return render(request, 'employers/edit_listing.html', context)
+
+def delete_listing(request, id):
+    if not 'employer_id' in request.session:
+        return redirect('/')
+    else:
+        Listing.objects.get(id = id).delete()
+        return redirect('/employers/company/' + str(request.session['employer_id']) + "/listings")
 
 def edit(request, action):
     if 'employer_id' in request.session:
@@ -67,6 +119,20 @@ def edit(request, action):
                     return redirect('/employers/company/' + str(request.session['employer_id']))
                 else:
                     return redirect('/employers/company/' + str(request.session['employer_id']))
+            elif action == "listing":
+                company_listing = Listing.objects.edit_listing(request.POST)
+                if company_listing['status'] == "bad":
+                    for error in company_listing['data']:
+                        messages.error(request, error)
+                    return redirect('employers/company/' + str(company_listing['data'].id) + '/edit')
+                else:
+                    return redirect('employers/company/' + str(request.session['employer_id']) + "/listings")
+            else:
+                return redirect('/employers/dashboard')
+        else:
+            return redirect('/employers/dashboard')
+    else:
+        return redirect('/')
 
 def company(request, id):
     if 'employer_id' in request.session:
@@ -117,14 +183,19 @@ def add(request, action):
                         return redirect('/employers/company/' + str(request.session['employer_id']))
                 else:
                     return redirect('/employers/company/' + str(request.session['employer_id']))
-            elif action == "listing":
-                employer_listing = Listing.objects.listing_validator(request.POST)
+            elif action == "listing_confirmation":
+                employer_listing = ConfirmListing.objects.confirmation(request.POST)
                 if employer_listing['status'] == "bad":
                     for error in employer_listing['data']:
                         messages.error(request, error)
                         return redirect('/employers/company/' + str(request.session['employer_id']) + "/new/listing")
                 else:
-                    return redirect('/employers/company/' + str(request.session['employer_id']) + "/listings")
+                    return redirect('/employers/company/' + str(request.session['employer_id']) + "/listing/" + str(employer_listing['data'].id) + "/confirm")
+            elif action == "listing":
+                confirm_listing = Listing.objects.listing_validator(request.POST)
+                return redirect('/employers/company/' + str(request.session['employer_id']) + "/listings")
+
+                        
 
 def listing(request):
     return render(request, 'employers/listing.html')

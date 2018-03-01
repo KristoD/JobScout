@@ -60,6 +60,11 @@
                 <div id="resume">
                     <div class="col-lg-8">
                         <h2>Work Experience</h2>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
                         <form action="/user/add/experience" method="POST" class="form-horizontal">
                             {% csrf_token %}
                             <div class="form-group">

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from .. employers.models import *
 import bcrypt
 import re
 from datetime import date
@@ -116,6 +117,8 @@ class AddressManager(models.Manager):
             errors.append("City must be 2 characters or longer!")
         if len(postData['phone']) != 10:
             errors.append("Invalid phone number!")
+        if len(postData['state']) != 2:
+            errors.append("State must be 2 characters in all capital letters.")
         if len(errors) > 0:
             res['status'] = "bad"
             res['data'] = errors
@@ -136,6 +139,8 @@ class AddressManager(models.Manager):
             errors.append("City must be 2 characters or longer!")
         if len(postData['phone']) != 10:
             errors.append("Invalid phone number!")
+        if len(postData['state']) != 2:
+            errors.append("State must be 2 characters in all capital letters.")
         if len(errors) > 0:
             res['status'] = "bad"
             res['data'] = errors
@@ -289,6 +294,7 @@ class Resume(models.Model):
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     user = models.OneToOneField(User, blank = True, null = True)
+    listings = models.ManyToManyField(Listing, related_name = "user_resumes")
 
     objects = ResumeManager()
 

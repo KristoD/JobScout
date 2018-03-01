@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from models import *
+from .. employers.models import *
 from django.contrib import messages
 
 def index(request):
@@ -13,14 +14,19 @@ def register(request):
 
 def resume(request, id):
     if 'user_id' in request.session:
-        resume = Resume.objects.get(user_id = id)
-        context = {
-            "user" : User.objects.get(id=id),
-            "resume" : Resume.objects.get(user_id = id),
-            "workexperience" : WorkExperience.objects.filter(resume_id = resume.id),
-            "education" : Education.objects.filter(resume_id = resume.id),
-            "skills" : Skill.objects.filter(resume_id = resume.id),
-        }
+        try:
+            resume = Resume.objects.get(user_id = id)
+            context = {
+                "user" : User.objects.get(id=id),
+                "resumes" : Resume.objects.filter(user_id = id),
+                "workexperience" : WorkExperience.objects.filter(resume_id = resume.id),
+                "education" : Education.objects.filter(resume_id = resume.id),
+                "skills" : Skill.objects.filter(resume_id = resume.id),
+            }
+        except:
+            context = {
+                "user" : User.objects.get(id=id)
+            }
         return render(request, 'users/resume.html', context)
     else:
         return redirect('/')
@@ -112,13 +118,18 @@ def new(request, id, action):
 
 def edit_show(request, id, action):
     if 'user_id' in request.session:
-        resume = Resume.objects.get(user_id = id)
-        context = {
-            "user" : User.objects.get(id=id),
-            "resume" : Resume.objects.get(user_id = id),
-            "address" : Address.objects.get(user_id = id),
-            "skills" : Skill.objects.get(resume_id = resume.id)
-        }
+        try:
+            resume = Resume.objects.get(user_id = id)
+            context = {
+                "user" : User.objects.get(id=id),
+                "resume" : Resume.objects.get(user_id = id),
+                "address" : Address.objects.get(user_id = id),
+                "skills" : Skill.objects.get(resume_id = resume.id)
+            }
+        except:
+            context = {
+                "user" : User.objects.get(id=id)
+            }
         if action == "profile":
             return render(request, 'users/edit_profile.html', context)
         elif action == "resume":
@@ -174,6 +185,7 @@ def users(request, ids):
             return render(request, 'users/employer_show.html')
     else:
         return redirect('/')
+
 
 def destroy(request, action, id):
     if 'user_id' in request.session:

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- To make page responsive on mobile -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>JobScout | Jobs</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'employees/css/dashboard.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'users/css/show.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'employers/css/applicant.css' %}">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
+			    	<span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			    </button>
+				<a href="/" class="navbar-brand">JobScout</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-nav-demo">
+				<ul class="nav navbar-nav">
+                    <li><a href="/employers/dashboard">Home</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="/employers/{{ employer.id }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Hi, {{ employer.first_name }} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/employers/company/{{ employer.id }}">Company</a></li>
+                            <li><a href="/employers/company/{{ employer.id }}/listings">Listings</a></li>
+                            <li><a href="/employers/company/{{ employer.id }}/edit/company">Edit Info</a></li>
+                            <li><a href="/employers/company/{{ employer.id }}/new/listing">New Job Listing</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>	
+	</nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div id="info">
+                    <h1>{{ listing.title }}</h1>
+                    <h3>Applicant Info:</h3>
+                    <p>First Name: {{ resume.user.first_name }}</p>
+                    <p>Last Name: {{ resume.user.last_name }}</p>
+                    <p>Email: {{ resume.user.email }}</p>
+                    <p>City: {{ resume.user.address.city }}</p>
+                    <p>Zip Code: {{ resume.user.address.zip_code }}</p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div id="resume">
+                    <h2>Resume:</h2>
+                        {% if resume.about_self != "" %}
+                            <p>About Self: {{ resume.about_self }}</p>
+                        {% endif %}
+                        {% if resume.desired_job != "" %}
+                            <p>Desired Job: {{ resume.desired_job }}</p>
+                        {% endif %}
+                    <h2>Work Experience:</h2>
+                    {% for experience in resume.experiences.all %}
+                        <p>Job Title: {{ experience.job_title }}</p>
+                        <p>Company: {{ experience.company }}</p>
+                        <p>City: {{ experience.city }}</p>
+                        <p>Time Period: {{ experience.time_start }} - {{ experience.time_end }}</p>
+                        <p>Description: {{ experience.description }}</p>
+                        <hr>
+                    {% endfor %}
+
+                    {% for edu in resume.educations.all %}
+                        {% if edu.degree != "" %}
+                            <h2>Education:</h2>
+                            {% if edu.degree != "" %}
+                                <p>Degree: {{ edu.degree }}</p>
+                            {% endif %}
+                            {% if edu.school != "" %}
+                                <p>School: {{ edu.school }}</p>
+                            {% endif %}
+                            {% if edu.study != "" %}
+                                <p>Field of Study: {{ edu.study }}</p>
+                            {% endif %}
+                            {% if edu.city != "" %}
+                                <p>City: {{ edu.city }}</p>
+                            {% endif %}
+                            {% if edu.time_start != None  %}
+                                <p>Time Period: {{ edu.time_start }} - {{ edu.time_end }}</p>
+                            {% endif %}
+                            {% if edu.school != "" %}
+                                <h2><a href="/user/education/{{ edu.id }}/destroy"><i class="fa fa-minus-circle"></i></a></h2>
+                                <hr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for skill in resume.skills.all %}
+                    <h2>Skills:</h2>
+                        <p>Skills: {{ skill.skills }}</p>
+                    {% endfor %}
+                    <form action="/employers/applicant/{{ resume.id }}/delete" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                        <button type="submit" class="btn btn-default btn-danger">Deny Applicant</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

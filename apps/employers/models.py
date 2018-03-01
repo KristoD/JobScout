@@ -1,6 +1,10 @@
 from __future__ import unicode_literals
 from django.db import models
 from ..users.models import *
+import bcrypt
+import stripe
+from job_scout import settings
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class EmployerManager(models.Manager):
     def registration_validator(self, postData):
@@ -116,7 +120,7 @@ class EmployerAddressManager(models.Manager):
             res['status'] = "bad"
             res['data'] = errors
         else:
-            address = EmployerAddress.objects.create(address = postData['address'], city = postData['city'], state = postData['state'], zip_code = postData['zip_code'], phone = postData['phone'], employer_id = postData['company_id'])
+            address = EmployerAddress.objects.create(address = postData['address'], city = postData['city'], zip_code = postData['zip_code'], phone = postData['phone'], employer_id = postData['company_id'])
             res['data'] = address
         return res
 
@@ -138,7 +142,6 @@ class EmployerAddressManager(models.Manager):
         else:
             address = EmployerAddress.objects.get(employer_id = postData['employer_id'])
             address.address = postData['address']
-            address.state = postData['state']
             address.city = postData['city']
             address.zip_code = postData['zip_code']
             address.phone = postData['phone']
@@ -148,6 +151,23 @@ class EmployerAddressManager(models.Manager):
 
 class ListingManager(models.Manager):
     def listing_validator(self, postData):
+        new_listing = Listing(title = postData['title'], company_description = postData['company_desc'], job_description = postData['job_desc'], city = postData['city'], employer_id = postData['employer_id'])
+        token = postData["stripeToken"]
+        try:
+            charge = stripe.Charge.create(
+                amount = 5000,
+                currency = "usd",
+                source = token,
+                description = "The product charged to the user")
+            new_listing.charge_id = charge.id
+        except stripe.error.CardError as ce:
+            return False, ce
+        else:
+            new_listing.save()
+            ConfirmListing.objects.get(id = postData['confirm_id']).delete()
+            return new_listing
+
+    def edit_listing(self, postData):
         res = {
             "status" : "good",
             "data" : ""
@@ -159,13 +179,45 @@ class ListingManager(models.Manager):
             errors.append("Must enter a company description!")
         if len(postData['job_desc']) < 1:
             errors.append("Must enter a job description!")
+        if len(postData['city']) < 1:
+            errors.append("Must enter a city!")
         if len(errors) > 0:
             res['status'] = "bad"
             res['data'] = errors
         else:
-            listing = Listing.objects.create(title = postData['title'], company_description = postData['company_desc'], job_description = postData['job_desc'], employer_id = postData['employer_id'])
+            listing = Listing.objects.get(id = postData['listing_id'])
+            listing.title = postData['title']
+            listing.company_description = postData['company_desc']
+            listing.job_description = postData['job_desc']
+            listing.city = postData['city']
+            listing.state = postData['state']
+            listing.save()
             res['data'] = listing
         return res
+
+class ConfirmListingManager(models.Manager):
+    def confirmation(self, postData):
+        res = {
+            "status" : "good",
+            "data" : ""
+        }
+        errors = []
+        if len(postData['title']) < 1:
+            errors.append("Must enter a title!")
+        if len(postData['company_desc']) < 1:
+            errors.append("Must enter a company description!")
+        if len(postData['job_desc']) < 1:
+            errors.append("Must enter a job description!")
+        if len(postData['city']) < 1:
+            errors.append("Must enter a city!")
+        if len(errors) > 0:
+            res['status'] = "bad"
+            res['data'] = errors
+        else:
+            confirm_listing = ConfirmListing.objects.create(title = postData['title'], company_description = postData['company_desc'], job_description = postData['job_desc'], city = postData['city'], employer = postData['employer_id'])
+            res['data'] = confirm_listing
+        return res
+
 
 class Employer(models.Model):
     company_name = models.CharField(max_length = 255)
@@ -192,8 +244,19 @@ class Listing(models.Model):
     title = models.CharField(max_length = 255)
     company_description = models.TextField(blank = True)   
     job_description = models.TextField(blank = True)
+    city = models.CharField(max_length = 45)
+    charge_id = models.CharField(max_length = 255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     employer = models.ForeignKey(Employer, related_name = "listings")
     
     objects = ListingManager()
+
+class ConfirmListing(models.Model):
+    title = models.CharField(max_length = 255)
+    company_description = models.TextField(blank = True)   
+    job_description = models.TextField(blank = True)
+    city = models.CharField(max_length = 45)
+    employer = models.SmallIntegerField(null = True)
+
+    objects = ConfirmListingManager()
