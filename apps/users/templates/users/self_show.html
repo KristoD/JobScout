@@ -64,7 +64,10 @@
                             <p>First Name: {{ user.first_name }}</p>
                             <p>Last Name: {{ user.last_name }}</p>
                             <p>Email: {{ user.email }}</p>
+                        </div>
                             {% if address %}
+                            <h3>Address:</h3>
+                            <div class="well">
                             {% for addy in address %}
                                 {% if addy.address %}
                                     <p>Address: {{ addy.address }}</p>
@@ -75,8 +78,8 @@
                                 {% endif %}
                                 <p>Zip Code: {{ addy.zip_code }}</p>
                                 <p>Phone Number: {{ addy.phone }}</p>
+                            </div>
                             {% endfor %}
-                        </div>
                     </div>
                         {% else %}
                             {% if messages %}
