@@ -61,31 +61,38 @@
                     <div id="listing">
                         {% if messages %}
                             {% for message in messages %}
-                                <p>{{ message }}</p>
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
-                        <form action="/employers/add/listing_confirmation" method="POST" class="form-horizontal">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="inputTitle">Listing Title</label>
-                                <input type="text" class="form-control" name="title" id="inputTitle">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputCity">City</label>
-                                <input type="text" class="form-control" name="city" id="inputCity">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputCompDesc">Company Description</label>
-                                <textarea class="form-control" id="inputCompDesc" name="company_desc" cols="15" rows="15"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputJobDesc">Job Description</label>
-                                <textarea class="form-control" id="inputJobDesc" name="job_desc" cols="15" rows="15"></textarea>
-                            </div>
-                            <div class="form-group"></div>
-                            <input type="hidden" name="employer_id" value="{{ request.session.employer_id }}">
-                            <input type="submit" value="Add Listing">
-                        </form>
+                        {% if employer.employeraddress %}
+                            <form action="/employers/add/listing_confirmation" method="POST" class="form-horizontal">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="inputTitle">Listing Title</label>
+                                    <input type="text" class="form-control" name="title" id="inputTitle">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCity">City</label>
+                                    <input type="text" class="form-control" name="city" id="inputCity">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCompDesc">Company Description</label>
+                                    <textarea class="form-control" id="inputCompDesc" name="company_desc" cols="15" rows="15"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputJobDesc">Job Description</label>
+                                    <textarea class="form-control" id="inputJobDesc" name="job_desc" cols="15" rows="15"></textarea>
+                                </div>
+                                <div class="form-group"></div>
+                                <input type="hidden" name="employer_id" value="{{ request.session.employer_id }}">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">Add Listing</button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <h3 class="alert alert-danger">You must enter your company address first</h3>
+                            <a href="/employers/company/{{ employer.id }}"><button class="btn btn-default">Add Address</button></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

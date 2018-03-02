@@ -4,6 +4,8 @@ from .. employers.models import *
 from django.contrib import messages
 
 def index(request):
+    if 'user_id' in request.session or 'employer_id' in request.session or 'admin_id' in request.session:
+        request.session.flush()
     return render(request, 'users/landing.html')
 
 def login(request):
@@ -50,10 +52,7 @@ def process(request, action):
                 return redirect('/login')
             else:
                 request.session['user_id'] = log_user['data'].id
-                if log_user['data'].user_level == 1:
-                    return redirect('/jobs')
-                elif log_user['data'].user_level == 3:
-                    return redirect('/admin')
+                return redirect('/jobs')
         else:
             return redirect('/')
     else:
@@ -201,7 +200,7 @@ def destroy(request, action, id):
         return redirect('/')
 
 def logout(request):
-    if 'user_id' in request.session:
+    if 'user_id' in request.session or 'employer_id' in request.session or 'admin_id' in request.session:
         request.session.flush()
         return redirect('/')
     else:

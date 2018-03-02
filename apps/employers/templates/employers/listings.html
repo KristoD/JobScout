@@ -67,6 +67,7 @@
                                 <p>Job Description: {{ listing.job_description }}</p>
                                 <a href="/employers/company/{{ listing.id }}/edit"><button class="btn btn-default btn-warning">Edit Listing <i class="fa fa-pencil-square-o"></i></button></a>
                                 <a href="/employers/company/{{ listing.id }}/destroy"><button class="btn btn-default btn-danger">Delete Listing <i class="fa fa-trash-o"></i></button></a>
+                                <hr>
                             {% endfor %}
                         {% else %}
                             <h2>No job listings.</h2>

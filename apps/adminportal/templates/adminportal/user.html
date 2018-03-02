@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- To make page responsive on mobile -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>JobScout | Jobs</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'employees/css/dashboard.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'employers/css/applicant.css' %}">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">JobScout</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-nav-demo">
+                <ul class="nav navbar-nav">
+                    <li><a href="/admin/dashboard">Home</a></li>
+                </ul>
+				<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="/admin/{{ admin.id }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> Hi, {{ admin.first_name }}</a>
+                    </li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>	
+    </nav>
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4">
+				<div id="info">
+                    <h1>User ID: {{ user.id }}</a></h1>
+                    <div class="well">
+                        <p>User Name:{{ user.first_name }} {{ user.last_name }}</hp>
+                        <p>User Email: {{ user.email }}</p>
+                        {% if user.address.address != "" %}
+                            <h5>User Address: {{ user.address.address }}</h5>
+                        {% endif %}
+                        {% if user.address %}
+                            <p>User City: {{ user.address.city }} </p>
+                            <p>User State: {{ user.address.state }}</p>
+                            <p>User Zip Code: {{ user.address.zip_code }}</p>
+                            <p>User Phone #: {{ user.address.phone }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div id="resume">
+                    {% if user.resume %}
+                            <h2>Resume:</h2>
+                            <div class="well">
+                                <p>About Self: {{ user.resume.about_self }}</p>
+                                <p>Desired Job: {{ user.resume.desired_job }}</p>
+                            </div>
+                            <div class="well">
+                            <h2>Work Experience</h2>
+                                {% for experience in user.resume.experiences.all %}
+                                    <p>Job Title: {{ experience.job_title }}</p>
+                                    <p>Company Name: {{ experience.company }}</p>
+                                    <p>City: {{ experience.city }}</p>
+                                    <p>Time Period: {{ experience.time_start }} - {{ experience.time_end }}</p>
+                            </div>
+                                    <hr>
+                                {% endfor %}
+                        {% for edu in user.resume.educations.all %}
+                            {% if edu.degree != "" %}
+                                <h2>Education:</h2>
+                                <div class="well">
+                                    {% if edu.degree != "" %}
+                                        <p>Degree: {{ edu.degree }}</p>
+                                    {% endif %}
+                                    {% if edu.school != "" %}
+                                        <p>School: {{ edu.school }}</p>
+                                    {% endif %}
+                                    {% if edu.study != "" %}
+                                        <p>Field of Study: {{ edu.study }}</p>
+                                    {% endif %}
+                                    {% if edu.city != "" %}
+                                        <p>City: {{ edu.city }}</p>
+                                    {% endif %}
+                                    {% if edu.time_start != None  %}
+                                        <p>Time Period: {{ edu.time_start }} - {{ edu.time_end }}</p>
+                                </div>
+                                    <hr>
+                                    {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for skill in user.resume.skills.all %}
+                        <h2>Skills:</h2>
+                            <div class="well">
+                                <p>{{ skill.skills }}</p>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if user.banned == False %}
+                    <form action="/admin/ban/{{ user.id }}/user" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-default btn-danger">Ban User</button>
+                    </form>
+                    {% else %}
+                    <form action="/admin/unban/{{ user.id }}/user" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-default btn-danger">Unban User</button>
+                    </form>
+                    {% endif %}
+                </div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

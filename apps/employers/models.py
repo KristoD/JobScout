@@ -4,6 +4,9 @@ from ..users.models import *
 import bcrypt
 import stripe
 from job_scout import settings
+import re
+
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class EmployerManager(models.Manager):
@@ -43,20 +46,20 @@ class EmployerManager(models.Manager):
         }
         try:
             the_employer = Employer.objects.get(email = postData['email'])
-            print "wtf"
         except:
             res['status'] = "bad"
             res['data'] = "Email or Password incorrect"
-            print "wtf"
+            return res
+        if the_employer.banned == True:
+            res['status'] = "bad"
+            res['data'] = "Sorry pal. You've been banned. If you feel this was a mistake, send us an email. You probably will never get a response."
             return res
         if bcrypt.checkpw(postData['password'].encode(), the_employer.password.encode()):
             res['data'] = the_employer
-            print "wtf"
             return res
         else:
             res['status'] = "bad"
             res['data'] = "Email or Password incorrect"
-            print "wtf"
             return res
     
     def edit_company(self, postData):
@@ -225,6 +228,7 @@ class Employer(models.Model):
     last_name = models.CharField(max_length = 255)
     email = models.CharField(max_length = 255)
     password = models.CharField(max_length = 255)
+    banned = models.BooleanField(default = False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

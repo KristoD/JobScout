@@ -34,7 +34,7 @@ class UserManager(models.Manager):
             res['data'] = errors
         else:
             hashed_pw = bcrypt.hashpw(postData['password'].encode(), bcrypt.gensalt())
-            user = User.objects.create(first_name = postData['first_name'], last_name = postData['last_name'], email = postData['email'], password = hashed_pw, user_level = 1)
+            user = User.objects.create(first_name = postData['first_name'], last_name = postData['last_name'], email = postData['email'], password = hashed_pw)
             res['data'] = user
         return res
 
@@ -48,6 +48,10 @@ class UserManager(models.Manager):
         except:
             res['status'] = "bad"
             res['data'] = "Email or Password incorrect"
+            return res
+        if the_user.banned == True:
+            res['status'] = "bad"
+            res['data'] = "Sorry pal. You've been banned. If you feel this was a mistake, send us an email. You probably will never get a response."
             return res
         if bcrypt.checkpw(postData['password'].encode(), the_user.password.encode()):
             res['data'] = the_user
@@ -272,7 +276,7 @@ class User(models.Model):
     last_name = models.CharField(max_length = 45)
     email = models.CharField(max_length = 255)
     password = models.CharField(max_length = 255)
-    user_level = models.SmallIntegerField(null = True)
+    banned = models.BooleanField(default = False)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 

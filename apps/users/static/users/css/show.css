@@ -15,17 +15,17 @@ html {
     height: 100%;
 }
 
-#info {
+/* #info {
     margin: 0 auto;
     width: 60%;
     padding: 0;
-}
+} */
 
 #navstack {
     margin-top: 10%;
 }
 
-#address, #resume {
+#address, #resume, #info {
     margin: 3% 10%;
     width: 75%;
 }

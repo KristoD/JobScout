@@ -26,7 +26,7 @@
             <div class="collapse navbar-collapse" id="bs-nav-demo">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li><a href="#">Blog</a></li>
+                    <li><a href="/employers/signin">Business accounts</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/signup">Sign up <i class="fa fa-user" aria-hidden="true"></i></a></li>
@@ -50,7 +50,7 @@
                 <div id="register">
                     {% if messages %}
                         {% for message in messages %}
-                            <p>{{ message }}</p>
+                            <p class="alert alert-danger">{{ message }}</p>
                         {% endfor %}
                     {% endif %}
                     <form class="form-horizontal" action="/process/login" method="POST">
@@ -62,9 +62,10 @@
                         <div class="form-group">
                             <label for="inputPassword">Password</label>
                             <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password">
+                            <a href="/signup">Don't have an account?</a>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-default">Sign up</button>
+                            <button type="submit" class="btn btn-default">Sign in</button>
                         </div>
                     </form>
                 </div>

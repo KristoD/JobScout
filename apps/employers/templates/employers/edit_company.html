@@ -49,7 +49,7 @@
                 <div class="col-md-4">
                     <div id="navstack">
                         <ul class="nav nav-pills nav-stacked">
-                                <li role="presentation"><a href="/employerscompany/{{ employer.id }}">Company</a></li>
+                                <li role="presentation"><a href="/employers/company/{{ employer.id }}">Company</a></li>
                                 <li role="presentation"><a href="/employers/company/{{ employer.id }}/listings">Job Listings</a></li>
                                 <li role="presentation" class="active"><a href="/employers/company/{{ employer.id }}/edit/company">Edit Info</a></li>
                                 <li role="presentation"><a href="/employers/company/{{ employer.id }}/new/listing">New Job Listings</a></li>
@@ -62,7 +62,7 @@
                         <h3>Edit Company Info:</h3>
                         {% if messages %}
                             {% for message in messages %}
-                                <p>{{ message }}</p>
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
                         <form action="/employers/edit/company" method="POST" class="form-horizontal">
@@ -88,34 +88,51 @@
                                 <input type="password" class="form-control" id="inputConfirm" name="confirm_password">
                             </div>
                             <input type="hidden" name="employer_id" value="{{ request.session.employer_id }}">
-                            <input type="submit" value="Edit Profile">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Edit Profile</button>
+                            </div>
                         </form>
                     </div>
 
-                    <div id="address">
-                        <h3>Address:</h3>
-                        <form action="/employers/edit/address" method="POST" class="form-horizontal">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="inputAddress">Address</label>
-                                <input type="text" class="form-control" id="inputAddress" name="address" value="{{ address.address }}" placeholder="101 Street Name Blvd">
+                    {% if address %}
+                        <div id="address">
+                            {% for addy in address %}
+                            <h3>Address:</h3>
+                            <form action="/employers/edit/address" method="POST" class="form-horizontal">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="inputAddress">Address</label>
+                                    <input type="text" class="form-control" id="inputAddress" name="address" value="{{ addy.address }}" placeholder="101 Street Name Blvd">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputCity">City</label>
+                                    <input type="text" class="form-control" id="inputCity" name="city" value="{{ addy.city }}" placeholder="San Francisco">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputZip">Zip Code</label>
+                                    <input type="text" class="form-control" id="inputZip" name="zip_code" value="{{ addy.zip_code }}" placeholder="12345">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPhone">Phone</label>
+                                    <input type="tel" class="form-control" id="inputPhone" name="phone" value="{{ addy.phone }}" placeholder="123-456-7890">
+                                </div>
+                                <input type="hidden" name="employer_id" value="{{ request.session.employer_id }}">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">Edit Address</button>
+                                </div>
+                            </form>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                            <div id="address">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <h3 class="alert alert-danger">You must enter your company address first</h3>
+                                        <a href="/employers/company/{{ employer.id }}"><button class="btn btn-default">Add Address</button></a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inputCity">City</label>
-                                <input type="text" class="form-control" id="inputCity" name="city" value="{{ address.city }}" placeholder="San Francisco">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputZip">Zip Code</label>
-                                <input type="text" class="form-control" id="inputZip" name="zip_code" value="{{ address.zip_code }}" placeholder="12345">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputPhone">Phone</label>
-                                <input type="tel" class="form-control" id="inputPhone" name="phone" value="{{ address.phone }}" placeholder="123-456-7890">
-                            </div>
-                            <input type="hidden" name="employer_id" value="{{ request.session.employer_id }}">
-                            <input type="submit" value="Edit Address">
-                        </form>
-                    </div>
+                        {% endif %}
                 </div>
             </div>
         </div>

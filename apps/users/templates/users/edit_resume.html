@@ -58,11 +58,12 @@
                 </div>
 
                 <div class="col-lg-8">
+                    <h3>Resume:</h3>
+                    <br>
                     <div id="info">
-                        <h3>Resume:</h3>
                         {% if messages %}
                             {% for message in messages %}
-                                <p>{{ message }}</p>
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
                         <form action="/user/edit/resume" method="POST" class="form-horizontal">
@@ -80,7 +81,9 @@
                                 <textarea class="form-control" name="skills" id="inputSkill" name="skills">{{ skills.skills }}</textarea>
                             </div>
                             <input type="hidden" name="resume_id" value="{{ resume.id }}">
-                            <input type="submit" value="Edit Resume">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Edit Resume</button>
+                            </div>
                         </form>
                     </div>
                 </div>

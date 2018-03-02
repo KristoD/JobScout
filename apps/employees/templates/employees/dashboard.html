@@ -55,7 +55,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8">
-				<div id="listing">
+				<div id="listings">
 					{% for listing in listings %}
 						<h4><a href="/jobs/{{ listing.id }}">{{ listing.title }}</a></h4>
 						<p><b>{{ listing.employer.company_name }}</b> - {{ listing.city }}</p>

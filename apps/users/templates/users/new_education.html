@@ -62,7 +62,7 @@
                         <h2>Education</h2>
                         {% if messages %}
                             {% for message in messages %}
-                                {{ message }}
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
                         <form action="/user/add/education" method="POST" class="form-horizontal">
@@ -92,7 +92,9 @@
                                     <input type="date" class="form-control" id="inputEduEndDate" name="edu_time_end">
                                 </div>
                             <input type="hidden" name="resume_id" value="{{ resume.id }}">
-                            <input type="submit" value="Add Education">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Add Education</button>
+                            </div>
                         </form>
                     </div>
                 </div>

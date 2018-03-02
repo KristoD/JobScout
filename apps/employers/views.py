@@ -49,7 +49,7 @@ def edit_company(request, id, action):
         if action == "company":
             context = {
                 "employer" : Employer.objects.get(id = request.session['employer_id']),
-                "address" : EmployerAddress.objects.get(employer_id = request.session['employer_id'])
+                "address" : EmployerAddress.objects.filter(employer_id = request.session['employer_id'])
             }
         return render(request, 'employers/edit_company.html', context)
 
@@ -108,7 +108,7 @@ def edit(request, action):
                 if edit_company['status'] == "bad":
                     for error in edit_company['data']:
                         messages.error(request, error)
-                    return redirect('/employers/company/' + str(request.session['employer_id']))
+                    return redirect('/employers/company/' + str(request.session['employer_id']) + "/edit/company")
                 else:
                     return redirect('/employers/company/' + str(request.session['employer_id']))
             elif action == "address":
@@ -116,7 +116,7 @@ def edit(request, action):
                 if company_address['status'] == "bad":
                     for error in company_address['data']:
                         messages.error(request, error)
-                    return redirect('/employers/company/' + str(request.session['employer_id']))
+                    return redirect('/employers/company/' + str(request.session['employer_id']) + "/edit/company")
                 else:
                     return redirect('/employers/company/' + str(request.session['employer_id']))
             elif action == "listing":

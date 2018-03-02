@@ -62,7 +62,7 @@
                         <h2>Work Experience</h2>
                         {% if messages %}
                             {% for message in messages %}
-                                <p>{{ message }}</p>
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
                         <form action="/user/add/experience" method="POST" class="form-horizontal">
@@ -92,7 +92,9 @@
                                 <textarea class="form-control" id="inputDescription" name="job_description"></textarea>
                             </div>
                             <input type="hidden" name="resume_id" value="{{ resume.id }}">
-                            <input type="submit" value="Add Work Experience">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Add Work Experience</button>
+                            </div>
                         </form>
                     </div>
                 </div>

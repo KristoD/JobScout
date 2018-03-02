@@ -46,7 +46,7 @@
     <div class="profile">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 col-s-4">
                     <div id="navstack">
                         <ul class="nav nav-pills nav-stacked">
                                 <li role="presentation"><a href="/user/{{ user.id }}">Profile</a></li>
@@ -57,12 +57,12 @@
                     </div>
                 </div>
 
-                <div class="col-lg-8">
+                <div class="col-lg-8 col-md-8">
+                    <h3>Profile Info:</h3>
                     <div id="info">
-                        <h3>Profile Info:</h3>
                         {% if messages %}
                             {% for message in messages %}
-                                <p>{{ message }}</p>
+                                <p class="alert alert-danger">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
                         <form action="/user/edit/profile" method="POST" class="form-horizontal">
@@ -88,12 +88,14 @@
                                 <input type="password" class="form-control" id="inputConfirm" name="confirm_password">
                             </div>
                             <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <input type="submit" value="Edit Profile">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Edit Profile</button>
+                            </div>
                         </form>
                     </div>
 
+                    <h3>Address:</h3>
                     <div id="address">
-                        <h3>Address:</h3>
                         <form action="/user/edit/address" method="POST" class="form-horizontal">
                             {% csrf_token %}
                             <div class="form-group">
@@ -117,7 +119,9 @@
                                 <input type="tel" class="form-control" id="inputPhone" name="phone" value="{{ address.phone }}" placeholder="123-456-7890">
                             </div>
                             <input type="hidden" name="user_id" value="{{ request.session.user_id }}">
-                            <input type="submit" value="Add Address">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Add Address</button>
+                            </div>
                         </form>
                     </div>
                 </div>

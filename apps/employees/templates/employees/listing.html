@@ -55,22 +55,28 @@
 	
 	<div class="container">
 		<div class="row">
-			<div id="listingTop" class="col-lg-8">
+			<div id="listingTop" class="col-lg-12">
 				<div id="listing">
-                    <h1><a href="/jobs/{{ listing.id }}">{{ listing.title }}</a></h1>
-                    <h3><b>{{ listing.employer.company_name }}</b> - {{ listing.city }}</h3>
-                    <h3>Company Description:</h3>
-                    <h5>{{ listing.company_description }}</h5>
-                    <h3>Job Description: </h3>
-                    <h5>{{ listing.job_description }}</h5>
-                    {% if 'user_id' in request.session %}
+                    <h1>{{ listing.title }}</a></h1>
+                    <h5><b>{{ listing.employer.company_name }}</b> - {{ listing.city }}</h5>
+					<h3>Company Description:</h3>
+					<div class="well">
+						<h5>{{ listing.company_description }}</h5>
+					</div>
+					<h3>Job Description: </h3>
+					<div class="well">
+						<h5>{{ listing.job_description }}</h5>
+					</div>
+                    {% if 'user_id' in request.session and resume and address %}
                         <form action="/jobs/application/{{ listing.id }}/process" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <button type="submit" class="btn btn-default">Apply</button>
+                            <button type="submit" class="btn btn-default btn-success">Apply</button>
                         </form>
-                    {% else %}
-                        <a href="/signup"><button>Signup To Apply</button></a>
+					{% elif 'user_id' in request.session %}
+						<a href="/user/{{ request.session.user_id }}"><button class="btn btn-default">Add Resume/Address</button></a>
+					{% else %}
+                        <a href="/signup"><button class="btn btn-default">Signup To Apply</button></a>
                     {% endif %}
 				</div>
 			</div>
